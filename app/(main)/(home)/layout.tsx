@@ -1,3 +1,4 @@
+import CartDrawer from '@/src/components/cart/Cart';
 import Footer from '@/src/components/shared/Footer';
 import Navbar from '@/src/components/shared/Navbar';
 import React from 'react';
@@ -11,7 +12,7 @@ const MainLayout = ({
         /* flex flex-col এবং min-h-screen নিশ্চিত করবে ফুটার নিচে থাকবে */
         <div className="flex flex-col min-h-screen antialiased selection:bg-[#b87333] selection:text-white bg-[#fdfdfd]">
 
-            {/* ১. নেভবার */}
+            <CartDrawer />
             <Navbar />
 
             {/* 

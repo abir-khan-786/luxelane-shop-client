@@ -1,9 +1,13 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { ShoppingBag } from "lucide-react";
+import { useCart } from "@/src/store/useCart";
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const { onOpen, cartItems } = useCart();
+
 
     return (
         <nav className="fixed w-full z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
@@ -23,7 +27,12 @@ const Navbar = () => {
 
                 {/* Desktop Icons */}
                 <div className="hidden md:flex items-center space-x-8">
-                    <button className="text-[#004d4d] font-bold text-xs uppercase tracking-widest border-b-2 border-[#b87333]">Bag (0)</button>
+                    <button onClick={onOpen} className="relative group">
+                        <ShoppingBag className="w-6 h-6 text-[#004d4d] group-hover:text-[#b87333] transition-colors" />
+                        <span className="absolute -top-1 -right-1 bg-[#b87333] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
+                            {cartItems.length}
+                        </span>
+                    </button>
                 </div>
 
                 {/* Mobile Menu Button */}
@@ -40,8 +49,11 @@ const Navbar = () => {
                         <li><Link href="/about" onClick={() => setIsOpen(false)}>Our Story</Link></li>
                         <li><Link href="/contact" onClick={() => setIsOpen(false)}>Contact</Link></li>
                     </ul>
-                    <button className="w-full mt-10 py-4 bg-[#b87333] text-white uppercase text-xs font-bold tracking-widest">
-                        Cart (0)
+                    <button onClick={onOpen} className="relative group">
+                        <ShoppingBag className="w-6 h-6 text-[#004d4d] group-hover:text-[#b87333] transition-colors" />
+                        <span className="absolute -top-1 -right-1 bg-[#b87333] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
+                            {cartItems.length}
+                        </span>
                     </button>
                 </div>
             )}

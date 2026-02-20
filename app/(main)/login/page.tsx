@@ -3,7 +3,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Chrome, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { authClient } from '@/src/lib/auth-client';
+import { authClient } from '@/src/lib/auth/auth-client';
 
 const LoginPage = () => {
 

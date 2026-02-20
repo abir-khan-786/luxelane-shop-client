@@ -1,0 +1,77 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  USER
+  ADMIN
+  SALLER
+  SUPER_ADMIN
+}
+
+enum Status {
+  PENDING
+  SHIPPING
+  DELEVERY
+  SUCCESS
+}
+
+// User Model
+model User {
+  id            String   @id @default(cuid())
+  name          String?
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  image         String?
+  role          Role     @default(USER) // String এর বদলে Enum ব্যবহার করা ভালো
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  products Product[] // একজন ইউজারের অনেক প্রোডাক্ট থাকতে পারে
+  sessions Session[]
+  orders   Order[] // অর্ডারের সাথে রিলেশন যোগ করা হলো
+}
+
+// Session Model (For Better Auth)
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Product Model
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  price       Int
+  category    String
+  image       String
+  stock       Int      @default(10)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Corrected Relation
+  userId String // এটি রিলেশন ফিল্ডের জন্য প্রয়োজন
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Order Model
+model Order {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items       Json
+  totalAmount Float
+  status      Status   @default(PENDING)
+  createdAt   DateTime @default(now())
+}

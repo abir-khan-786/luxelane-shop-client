@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Chrome, UserPlus, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
-import { authClient } from '@/src/lib/auth-client';
+import { authClient } from '@/src/lib/auth/auth-client';
 
 const RegisterPage = () => {
     const [name, setName] = useState("");
