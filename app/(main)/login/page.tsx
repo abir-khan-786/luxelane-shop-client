@@ -1,18 +1,23 @@
 "use client";
+
+
+
+
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { authClient } from '@/src/lib/auth-client';
 import { Chrome, ArrowRight, Loader2 } from 'lucide-react';
 import Link from 'next/link';
-import toast from 'react-hot-toast';
+import toast from 'react-hot-toast'; // ✅ এটি ব্যবহারের জন্য রেডি
+import { useRouter } from 'next/navigation';
 
 const LoginPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
+    const router = useRouter();
 
-
-    // গুগল লগইন
+    // গুগল লগইন [Better Auth Social](https://www.better-auth.com)
     const handleGoogleLogin = async () => {
         await authClient.signIn.social({
             provider: "google",
@@ -20,24 +25,43 @@ const LoginPage = () => {
         });
     };
 
-    // ইমেইল লগইন (Better Auth)
+    // ইমেইল লগইন [Better Auth Sign In](https://www.better-auth.com)
     const handleSignIn = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
+
         try {
             const { data, error } = await authClient.signIn.email({
                 email,
                 password,
-                callbackURL: "/"
+                callbackURL: "/admin"
             });
-            toast.success(`${data?.user.name} welcome`)
+
+            if (error) {
+                // ✅ এরর টোস্ট (User not found বা Invalid password এর জন্য)
+                if (error) {
+                    if (error.status === 401) {
+                        toast.error("Invalid password. Please try again.");
+                    } else if (error.status === 404) {
+                        toast.error("No account found with this email.");
+                    } else {
+                        toast.error(error.message || "Login failed.");
+                    }
+                }
+
+            } else {
+                // ✅ সাকসেস টোস্ট
+                toast.success("Welcome back to the Lane!", {
+                    icon: '💼',
+                    style: { borderRadius: '10px', background: '#b87333', color: '#fff', fontSize: '12px' }
+                });
+                router.push("/admin");
+            }
         } catch (error) {
-            console.error("Login failed:", error);
-            alert("Invalid credentials, please try again.");
+            toast.error("Something went wrong. Please check your connection.");
         } finally {
             setLoading(false);
         }
-
     };
 
     return (
@@ -54,7 +78,6 @@ const LoginPage = () => {
                 transition={{ duration: 0.8 }}
                 className="max-w-md w-full bg-white border border-gray-100 p-10 md:p-14 shadow-[0_20px_50px_rgba(0,0,0,0.05)] relative z-10"
             >
-                {/* Brand Identity */}
                 <div className="text-center mb-12 space-y-2">
                     <Link href="/" className="font-serif text-3xl font-bold text-[#004d4d]">
                         LuxeLane<span className="text-[#b87333]">.</span>
@@ -64,7 +87,6 @@ const LoginPage = () => {
 
                 <h2 className="font-serif text-2xl text-[#004d4d] mb-8 text-center uppercase tracking-widest">Sign In</h2>
 
-                {/* Google Sign In */}
                 <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -81,7 +103,6 @@ const LoginPage = () => {
                     <div className="absolute top-1/2 left-0 w-full h-[1px] bg-gray-100"></div>
                 </div>
 
-                {/* Email Form */}
                 <form onSubmit={handleSignIn} className="space-y-6">
                     <div className="space-y-1 text-left">
                         <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Email Address</label>
@@ -111,8 +132,12 @@ const LoginPage = () => {
                         type="submit"
                         className="w-full bg-[#004d4d] text-white py-5 text-[11px] font-bold uppercase tracking-widest hover:bg-[#b87333] disabled:bg-gray-400 transition-all duration-500 flex items-center justify-center gap-3 shadow-xl group"
                     >
-                        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Enter The Lane"}
-                        {!loading && <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />}
+                        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : (
+                            <>
+                                Enter The Lane
+                                <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
+                            </>
+                        )}
                     </button>
                 </form>
 

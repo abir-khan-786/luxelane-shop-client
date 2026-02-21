@@ -1,23 +1,47 @@
 "use client";
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Chrome, UserPlus, ShieldCheck } from 'lucide-react';
+import { Chrome, UserPlus, ShieldCheck, Loader2 } from 'lucide-react'; // ✅ Loader2 যোগ করা হয়েছে
 import Link from 'next/link';
 import { authClient } from '@/src/lib/auth-client';
+import { useRouter } from 'next/navigation';
 
 const RegisterPage = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [isLoading, setIsLoading] = useState(false); // ✅ লোডিং স্টেট
+    const router = useRouter();
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
-        await authClient.signUp.email({
-            name,
-            email,
-            password,
-            callbackURL: "/",
-        });
+
+        // Better Auth ডিফল্টভাবে ৮ ক্যারেক্টার পাসওয়ার্ড চায়
+        if (password.length < 8) {
+            alert("Luxury requires security! Password must be at least 8 characters.");
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            const { data, error } = await authClient.signUp.email({
+                name,
+                email,
+                password,
+                callbackURL: "/",
+            });
+
+            if (error) {
+                // ৪২২ এরর বা ডুপ্লিকেট ইমেইল এরর এখানে হ্যান্ডেল হবে
+                alert(error.message || "Registration failed. Please check your details.");
+            } else {
+                router.push("/"); // সফল হলে হোমপেজে যাবে
+            }
+        } catch (err) {
+            alert("An unexpected error occurred.");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleGoogleLogin = async () => {
@@ -29,7 +53,6 @@ const RegisterPage = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-[#fdfdfd] py-20 px-6 overflow-hidden">
-            {/* Soft Ambient Background */}
             <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-5">
                 <div className="absolute top-1/4 left-1/4 w-80 h-80 rounded-full bg-[#b87333] blur-[100px]"></div>
                 <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full bg-[#004d4d] blur-[100px]"></div>
@@ -41,16 +64,15 @@ const RegisterPage = () => {
                 transition={{ duration: 0.8 }}
                 className="max-w-lg w-full bg-white border border-gray-100 p-8 md:p-14 shadow-2xl relative z-10"
             >
-                {/* Header */}
                 <div className="text-center mb-10 space-y-2">
                     <h2 className="font-serif text-3xl text-[#004d4d] tracking-tight">Create <span className="italic text-[#b87333]">Account</span></h2>
                     <p className="text-gray-400 text-[10px] uppercase tracking-[0.3em] font-bold">Join the Exclusive Lane</p>
                 </div>
 
-                {/* Google Quick Join */}
                 <button
                     onClick={handleGoogleLogin}
-                    className="w-full flex items-center justify-center gap-4 py-4 border border-gray-200 hover:border-[#b87333]/40 transition-all duration-300 mb-8 group"
+                    disabled={isLoading}
+                    className="w-full flex items-center justify-center gap-4 py-4 border border-gray-200 hover:border-[#b87333]/40 transition-all duration-300 mb-8 group disabled:opacity-50"
                 >
                     <Chrome className="w-4 h-4 text-[#b87333]" />
                     <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#004d4d]">Join with Google</span>
@@ -61,13 +83,13 @@ const RegisterPage = () => {
                     <div className="absolute top-1/2 left-0 w-full h-[1px] bg-gray-100"></div>
                 </div>
 
-                {/* Registration Form */}
                 <form onSubmit={handleRegister} className="grid grid-cols-1 gap-6">
                     <div className="space-y-1">
                         <label className="text-[9px] font-bold uppercase tracking-widest text-gray-400">Full Name</label>
                         <input
                             required
                             type="text"
+                            value={name} // ✅ ভ্যালু বাইন্ডিং
                             onChange={(e) => setName(e.target.value)}
                             className="w-full py-3 bg-transparent border-b border-gray-200 focus:border-[#b87333] outline-none transition-all text-sm font-light text-[#004d4d]"
                             placeholder="John Doe"
@@ -79,6 +101,7 @@ const RegisterPage = () => {
                         <input
                             required
                             type="email"
+                            value={email} // ✅ ভ্যালু বাইন্ডিং
                             onChange={(e) => setEmail(e.target.value)}
                             className="w-full py-3 bg-transparent border-b border-gray-200 focus:border-[#b87333] outline-none transition-all text-sm font-light text-[#004d4d]"
                             placeholder="luxury@luxe.com"
@@ -90,6 +113,7 @@ const RegisterPage = () => {
                         <input
                             required
                             type="password"
+                            value={password} // ✅ ভ্যালু বাইন্ডিং
                             onChange={(e) => setPassword(e.target.value)}
                             className="w-full py-3 bg-transparent border-b border-gray-200 focus:border-[#b87333] outline-none transition-all text-sm font-light text-[#004d4d]"
                             placeholder="••••••••"
@@ -98,18 +122,22 @@ const RegisterPage = () => {
 
                     <div className="flex items-center gap-3 py-2">
                         <ShieldCheck className="w-4 h-4 text-[#b87333]" />
-                        <p className="text-[10px] text-gray-400 leading-tight">By joining, you agree to our <span className="underline cursor-pointer">Member Terms</span> and Privacy Policy.</p>
+                        <p className="text-[10px] text-gray-400 leading-tight">By joining, you agree to our <span className="underline cursor-pointer">Member Terms</span>.</p>
                     </div>
 
                     <button
                         type="submit"
-                        className="w-full bg-[#004d4d] text-white py-5 text-[11px] font-bold uppercase tracking-widest hover:bg-[#b87333] transition-all duration-500 flex items-center justify-center gap-3 shadow-xl mt-4"
+                        disabled={isLoading}
+                        className="w-full bg-[#004d4d] text-white py-5 text-[11px] font-bold uppercase tracking-widest hover:bg-[#b87333] transition-all duration-500 flex items-center justify-center gap-3 shadow-xl mt-4 disabled:bg-gray-400"
                     >
-                        Register Member <UserPlus className="w-4 h-4" />
+                        {isLoading ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                            <>Register Member <UserPlus className="w-4 h-4" /></>
+                        )}
                     </button>
                 </form>
 
-                {/* Switch to Login */}
                 <div className="mt-10 text-center border-t border-gray-50 pt-8">
                     <p className="text-[11px] text-gray-400 uppercase tracking-widest">
                         Already a member? <Link href="/login" className="text-[#b87333] font-bold hover:underline ml-2 transition-all">Sign In Here</Link>
