@@ -1,14 +1,17 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { ShoppingBag } from "lucide-react";
+import { LogIn, ShoppingBag } from "lucide-react";
 import { useCart } from "@/src/store/useCart";
+import { authClient } from "@/src/lib/auth-client";
+import Loading from "../Loading/IsLoading";
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const { onOpen, cartItems } = useCart();
 
-
+    const { data: user, isPending, isRefetching, error } = authClient.useSession()
+    if (isPending) return <Loading />
     return (
         <nav className="fixed w-full z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
             <div className="max-w-7xl mx-auto px-6 lg:px-12 py-5 flex justify-between items-center">
@@ -23,6 +26,7 @@ const Navbar = () => {
                     <li><Link href="/shop" className="hover:text-[#b87333] transition-colors">Collections</Link></li>
                     <li><Link href="/about" className="hover:text-[#b87333] transition-colors">Our Story</Link></li>
                     <li><Link href="/contact" className="hover:text-[#b87333] transition-colors">Contact</Link></li>
+                    <li><Link href="/admin" className="hover:text-[#b87333] transition-colors">Admin</Link></li>
                 </ul>
 
                 {/* Desktop Icons */}
@@ -33,6 +37,14 @@ const Navbar = () => {
                             {cartItems.length}
                         </span>
                     </button>
+                    <Link href={"/login"} className="relative group">
+                        <LogIn className="w-6 h-6 text-[#004d4d] group-hover:text-[#b87333] transition-colors" />
+                    </Link>
+
+                    <Link href={"/profile"} className="relative group">
+                        {user?.user.name}
+                    </Link>
+
                 </div>
 
                 {/* Mobile Menu Button */}

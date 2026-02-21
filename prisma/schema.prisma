@@ -21,6 +21,7 @@ enum Status {
 }
 
 // User Model
+
 model User {
   id            String   @id @default(cuid())
   name          String?
@@ -32,12 +33,15 @@ model User {
   updatedAt     DateTime @updatedAt
 
   // Relations
-  products Product[] // একজন ইউজারের অনেক প্রোডাক্ট থাকতে পারে
   sessions Session[]
   orders   Order[] // অর্ডারের সাথে রিলেশন যোগ করা হলো
+  accounts Account[]
+
+  @@map("user")
 }
 
 // Session Model (For Better Auth)
+
 model Session {
   id        String   @id @default(cuid())
   userId    String
@@ -46,9 +50,46 @@ model Session {
   expiresAt DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("verification")
 }
 
 // Product Model
+
 model Product {
   id          String   @id @default(cuid())
   name        String
@@ -59,13 +100,10 @@ model Product {
   stock       Int      @default(10)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
-  // Corrected Relation
-  userId String // এটি রিলেশন ফিল্ডের জন্য প্রয়োজন
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 // Order Model
+
 model Order {
   id          String   @id @default(cuid())
   userId      String

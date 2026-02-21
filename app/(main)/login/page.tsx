@@ -1,22 +1,48 @@
 "use client";
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Chrome, ArrowRight } from 'lucide-react';
+import { authClient } from '@/src/lib/auth-client';
+import { Chrome, ArrowRight, Loader2 } from 'lucide-react';
 import Link from 'next/link';
-import { authClient } from '@/src/lib/auth/auth-client';
+import toast from 'react-hot-toast';
 
 const LoginPage = () => {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
 
+
+    // গুগল লগইন
     const handleGoogleLogin = async () => {
         await authClient.signIn.social({
             provider: "google",
-            callbackURL: "/", // লগইন সফল হলে হোম পেজে যাবে
+            callbackURL: "/",
         });
     };
 
+    // ইমেইল লগইন (Better Auth)
+    const handleSignIn = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            const { data, error } = await authClient.signIn.email({
+                email,
+                password,
+                callbackURL: "/"
+            });
+            toast.success(`${data?.user.name} welcome`)
+        } catch (error) {
+            console.error("Login failed:", error);
+            alert("Invalid credentials, please try again.");
+        } finally {
+            setLoading(false);
+        }
+
+    };
+
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#fdfdfd] py-20 px-6 overflow-hidden">
-            {/* Background Decorative Elements */}
+        <div className="min-h-screen flex items-center justify-center bg-[#fdfdfd] py-20 px-6 overflow-hidden text-[#004d4d]">
+            {/* Background Decorations */}
             <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-5">
                 <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-[#b87333] blur-[120px]"></div>
                 <div className="absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-[#004d4d] blur-[120px]"></div>
@@ -38,15 +64,16 @@ const LoginPage = () => {
 
                 <h2 className="font-serif text-2xl text-[#004d4d] mb-8 text-center uppercase tracking-widest">Sign In</h2>
 
-                {/* Google Sign In - The Premium Way */}
+                {/* Google Sign In */}
                 <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={handleGoogleLogin}
+                    type="button"
                     className="w-full flex items-center justify-center gap-4 py-5 border border-gray-200 hover:border-[#b87333]/50 transition-all duration-500 mb-8 group"
                 >
                     <Chrome className="w-5 h-5 text-[#b87333]" />
-                    <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#004d4d]">Continue with Google</span>
+                    <span className="text-[11px] font-bold uppercase tracking-[0.2em]">Continue with Google</span>
                 </motion.button>
 
                 <div className="relative mb-10 text-center">
@@ -55,31 +82,40 @@ const LoginPage = () => {
                 </div>
 
                 {/* Email Form */}
-                <form className="space-y-6">
-                    <div className="space-y-1">
+                <form onSubmit={handleSignIn} className="space-y-6">
+                    <div className="space-y-1 text-left">
                         <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Email Address</label>
                         <input
+                            required
                             type="email"
-                            className="w-full py-3 bg-transparent border-b border-gray-200 focus:border-[#b87333] outline-none transition-colors text-sm font-light text-[#004d4d]"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full py-3 bg-transparent border-b border-gray-200 focus:border-[#b87333] outline-none transition-colors text-sm font-light"
                             placeholder="name@luxury.com"
                         />
                     </div>
-                    <div className="space-y-1">
+                    <div className="space-y-1 text-left">
                         <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Secret Key</label>
                         <input
+                            required
                             type="password"
-                            className="w-full py-3 bg-transparent border-b border-gray-200 focus:border-[#b87333] outline-none transition-colors text-sm font-light text-[#004d4d]"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="w-full py-3 bg-transparent border-b border-gray-200 focus:border-[#b87333] outline-none transition-colors text-sm font-light"
                             placeholder="••••••••"
                         />
                     </div>
 
-                    <button className="w-full bg-[#004d4d] text-white py-5 text-[11px] font-bold uppercase tracking-widest hover:bg-[#b87333] transition-all duration-500 flex items-center justify-center gap-3 shadow-xl group">
-                        Enter The Lane
-                        <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
+                    <button
+                        disabled={loading}
+                        type="submit"
+                        className="w-full bg-[#004d4d] text-white py-5 text-[11px] font-bold uppercase tracking-widest hover:bg-[#b87333] disabled:bg-gray-400 transition-all duration-500 flex items-center justify-center gap-3 shadow-xl group"
+                    >
+                        {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Enter The Lane"}
+                        {!loading && <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />}
                     </button>
                 </form>
 
-                {/* Footer Link */}
                 <div className="mt-12 text-center">
                     <p className="text-[11px] text-gray-400 uppercase tracking-widest">
                         Not a member yet? <Link href="/register" className="text-[#b87333] font-bold hover:underline">Apply Here</Link>

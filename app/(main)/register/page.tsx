@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Chrome, UserPlus, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
-import { authClient } from '@/src/lib/auth/auth-client';
+import { authClient } from '@/src/lib/auth-client';
 
 const RegisterPage = () => {
     const [name, setName] = useState("");
@@ -13,10 +13,10 @@ const RegisterPage = () => {
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
         await authClient.signUp.email({
+            name,
             email,
             password,
-            name,
-            callbackURL: "/dashboard",
+            callbackURL: "/",
         });
     };
 

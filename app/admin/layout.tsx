@@ -10,7 +10,8 @@ import {
     Settings,
     Menu,
     X,
-    LogOut
+    LogOut,
+    Plus
 } from 'lucide-react';
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
@@ -18,7 +19,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
 
     const menuItems = [
         { name: 'Dashboard', icon: <LayoutDashboard size={20} />, href: '/admin' },
-        { name: 'Products', icon: <Package size={20} />, href: '/admin/products' },
+        { name: 'All Products', icon: <ShoppingBag size={20} />, href: '/admin/allProducts' },
         { name: 'Orders', icon: <ShoppingBag size={20} />, href: '/admin/orders' },
         { name: 'Customers', icon: <Users size={20} />, href: '/admin/users' },
         { name: 'Settings', icon: <Settings size={20} />, href: '/admin/settings' },
