@@ -4,14 +4,13 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     LayoutDashboard,
-    Package,
     ShoppingBag,
     Users,
     Settings,
     Menu,
     X,
     LogOut,
-    Plus
+
 } from 'lucide-react';
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
@@ -21,7 +20,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
         { name: 'Dashboard', icon: <LayoutDashboard size={20} />, href: '/admin' },
         { name: 'All Products', icon: <ShoppingBag size={20} />, href: '/admin/allProducts' },
         { name: 'Orders', icon: <ShoppingBag size={20} />, href: '/admin/orders' },
-        { name: 'Customers', icon: <Users size={20} />, href: '/admin/users' },
+        { name: 'Customers', icon: <Users size={20} />, href: '/admin/customers' },
         { name: 'Settings', icon: <Settings size={20} />, href: '/admin/settings' },
     ];
 
@@ -54,7 +53,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
                         </div>
 
                         {/* Menu Links */}
-                        <nav className="flex-grow space-y-2">
+                        <nav className="flexGrow space-y-2">
                             {menuItems.map((item) => (
                                 <Link
                                     key={item.name}
@@ -79,7 +78,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
             </AnimatePresence>
 
             {/* Main Admin Content Area */}
-            <main className="flex-grow p-6 lg:p-12 overflow-y-auto">
+            <main className="flexGrow p-6 lg:p-12 overflow-y-auto">
                 <div className="max-w-6xl mx-auto">
                     {children}
                 </div>

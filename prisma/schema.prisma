@@ -52,6 +52,7 @@ model Session {
   updatedAt DateTime @updatedAt
   ipAddress String?
   userAgent String?
+  role      Role     @default(USER)
 
   @@index([userId])
   @@map("session")
@@ -72,6 +73,7 @@ model Account {
   password              String?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
+  role                  Role      @default(USER)
 
   @@index([userId])
   @@map("account")

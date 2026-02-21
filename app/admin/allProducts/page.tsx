@@ -7,14 +7,13 @@ import Link from "next/link";
 import Loading from "@/src/components/Loading/IsLoading";
 import { useParams } from "next/navigation";
 import { Product } from "@prisma/client";
+import { authClient } from "@/src/lib/auth-client";
 
 export default function AdminProductTable() {
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
 
-    const resolvedParams = useParams();
-    const id = resolvedParams.id;
 
     // ✅ ১. আগে ফাংশনটি ডিফাইন করুন
     async function fetchProducts() {

@@ -30,11 +30,11 @@ export default function RootLayout({
       >
         {children}
         <Toaster
-          position="top-center" // অথবা "top-right" দিতে পারেন
+          position="top-right"
           reverseOrder={false}
           gutter={8}
           toastOptions={{
-            // আপনি চাইলে এখান থেকে গ্লোবাল স্টাইল সেট করতে পারেন
+
             duration: 5000,
             style: {
               background: '#363636',
