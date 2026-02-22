@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Loading from "@/src/components/Loading/IsLoading";
 import { Product } from "@/src/types/ProductType";
+import toast from "react-hot-toast";
 
 export default function UpdateProductPage({ params }: { params: Promise<{ slug: string }> }) {
     const resolvedParams = use(params);
@@ -58,14 +59,14 @@ export default function UpdateProductPage({ params }: { params: Promise<{ slug: 
             });
 
             if (res.ok) {
-                alert("Product updated successfully! 🚀");
+                toast.success("Product updated successfully! 🚀");
                 router.push("/admin/allProducts");
                 router.refresh();
             } else {
-                alert("Failed to update on server");
+                toast.error("Failed to update on server");
             }
         } catch (error) {
-            alert("Network error occurred");
+            toast.error("Network error occurred");
         } finally {
             setUpdating(false);
         }

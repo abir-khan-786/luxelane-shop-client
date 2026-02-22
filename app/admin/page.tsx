@@ -1,7 +1,19 @@
-import React from 'react';
+import React, { ReactNode } from "react";
+
 import { DollarSign, ShoppingCart, Package, Users } from 'lucide-react';
 
-const StatCard = ({ title, value, icon, trend }: any) => (
+
+
+
+interface StatCardProps {
+    title: string;
+    value: string | number;
+    icon: ReactNode;
+    trend: string;
+}
+
+
+const StatCard = ({ title, value, icon, trend }: StatCardProps) => (
     <div className="bg-white p-8 border border-gray-100 shadow-sm rounded-2xl space-y-4">
         <div className="flex justify-between items-start">
             <div className="p-3 bg-[#004d4d]/5 rounded-xl text-[#004d4d]">{icon}</div>

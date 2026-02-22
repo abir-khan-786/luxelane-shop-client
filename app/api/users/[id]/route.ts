@@ -23,3 +23,31 @@ export async function GET(
         return NextResponse.json({ error: "Error" }, { status: 500 });
     }
 }
+export async function DELETE(request: Request) {
+    const { searchParams } = new URL(request.url);
+    const userId = searchParams.get("userId");
+
+    if (!userId) return Response.json({ error: "User ID required" }, { status: 400 });
+
+    try {
+        // ১. আগে চেক করুন ইউজারটি ডাটাবেসে আছে কি না
+        const existingUser = await prisma.user.findUnique({
+            where: { id: userId },
+        });
+
+        // ২. ইউজার না পাওয়া গেলে এরর রিটার্ন করুন
+        if (!existingUser) {
+            return Response.json({ error: "User not found" }, { status: 404 });
+        }
+
+        // ৩. ইউজার থাকলে তাকে ডিলিট করুন
+        await prisma.user.delete({
+            where: { id: userId },
+        });
+
+        return Response.json({ success: true, message: "User deleted successfully" });
+    } catch (error) {
+        console.error("Delete Error:", error);
+        return Response.json({ error: "Internal Server Error" }, { status: 500 });
+    }
+}

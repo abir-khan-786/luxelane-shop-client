@@ -12,5 +12,14 @@ export const auth = betterAuth({
     },
     secret: process.env.BETTER_AUTH_SECRET,
     baseURL: "http://localhost:3000",
+    user: {
+        additionalFields: {
+            role: {
+                type: "string",
+                defaultValue: "USER", // ডিফল্ট রোল
+                input: false, // ইউজার নিজে যেন সাইনআপের সময় রোল সেট করতে না পারে
+            },
+        },
+    },
 
 });

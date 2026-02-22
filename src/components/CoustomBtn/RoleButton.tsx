@@ -3,20 +3,16 @@
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 
-// এই ফাংশনটি সার্ভার সাইডে ডাটা আপডেট করবে
-async function updateRole(userId: string, currentRole: string) {
-    const response = await fetch("/api/admin/update-role", {
-        method: "POST",
-        body: JSON.stringify({ userId, currentRole }),
-    });
-    return response.json();
-}
 
 export default function RoleButton({ userId, role }: { userId: string, role: string }) {
     const [isPending, startTransition] = useTransition();
     const router = useRouter();
 
     const handleToggle = () => {
+
+
+
+
         startTransition(async () => {
 
             const newRole = role === "ADMIN" ? "USER" : "ADMIN";

@@ -122,7 +122,7 @@ export default function AdminProductTable() {
                                                 <div className="flex items-center justify-center gap-2">
                                                     <Link href={`/admin/allProducts/${product.id}`}>
                                                         <button className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all">
-                                                            <Edit3 size={18} /> EDMI
+                                                            <Edit3 size={18} />
                                                         </button>
                                                     </Link>
                                                     <button
