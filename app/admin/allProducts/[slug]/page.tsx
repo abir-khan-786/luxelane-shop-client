@@ -4,14 +4,14 @@ import { useEffect, useState, use } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Loading from "@/src/components/Loading/IsLoading";
-import { Product } from "@/src/types/ProductType";
 import toast from "react-hot-toast";
+import { IProduct } from "@/src/types/ProductType";
 
 export default function UpdateProductPage({ params }: { params: Promise<{ slug: string }> }) {
     const resolvedParams = use(params);
     const productId = resolvedParams.slug;
 
-    const [product, setProduct] = useState<Product | null>(null);
+    const [product, setProduct] = useState<IProduct | null>(null);
     const [loading, setLoading] = useState(true);
     const [updating, setUpdating] = useState(false);
     const router = useRouter();
@@ -28,7 +28,7 @@ export default function UpdateProductPage({ params }: { params: Promise<{ slug: 
 
                 if (!res.ok) throw new Error("Product fetch failed");
 
-                const data: Product = await res.json();
+                const data: IProduct = await res.json();
                 setProduct(data);
             } catch (error) {
                 console.error("Error fetching product:", error);

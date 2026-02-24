@@ -13,7 +13,6 @@ const MainLayout = ({
 
 
 
-
     return (
         /* flex flex-col এবং min-h-screen নিশ্চিত করবে ফুটার নিচে থাকবে */
         <div className="flex flex-col min-h-screen antialiased selection:bg-[#b87333] selection:text-white bg-[#fdfdfd]">

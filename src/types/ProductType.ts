@@ -1,4 +1,4 @@
-export interface Product {
+export interface IProduct {
     id: string;
     name: string;
     description?: string | null;
@@ -6,6 +6,6 @@ export interface Product {
     category: string;
     image: string;
     stock: number;
-    createdAt: string | Date;
-    updatedAt: string | Date;
+    createdAt: string
+    updatedAt: string
 }

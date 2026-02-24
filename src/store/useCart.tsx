@@ -1,13 +1,14 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-// প্রোডাক্টের টাইপ নির্ধারণ
+// Product interface-e quantity add kora hoyeche
 interface Product {
     id: string | number;
     name: string;
     price: number;
-    img: string;
+    image: string;
     category?: string;
+    quantity?: number; // Optional quantity property
 }
 
 interface CartStore {
@@ -26,27 +27,33 @@ export const useCart = create<CartStore>()(
             isOpen: false,
             cartItems: [],
 
-            // কার্ট ওপেন এবং ক্লোজ হ্যান্ডলার
             onOpen: () => set({ isOpen: true }),
             onClose: () => set({ isOpen: false }),
 
-            // প্রোডাক্ট যোগ করা
             addItem: (product) => set((state) => {
                 const isExist = state.cartItems.find((item) => item.id === product.id);
-                if (isExist) return state; // যদি অলরেডি থাকে তবে আর যোগ হবে না
-                return { cartItems: [...state.cartItems, product] };
+
+                if (isExist) {
+                    return {
+                        cartItems: state.cartItems.map((item) =>
+                            item.id === product.id
+                                ? { ...item, quantity: (item.quantity || 1) + 1 }
+                                : item
+                        ),
+                    };
+                }
+                // Notun product-er shathe default quantity 1 set kora hochche
+                return { cartItems: [...state.cartItems, { ...product, quantity: 1 }] };
             }),
 
-            // প্রোডাক্ট রিমুভ করা
             removeItem: (id) => set((state) => ({
                 cartItems: state.cartItems.filter((item) => item.id !== id),
             })),
 
-            // কার্ট খালি করা
             clearCart: () => set({ cartItems: [] }),
         }),
         {
-            name: 'luxelane-cart-storage', // লোকাল স্টোরেজে এই নামে সেভ হবে
+            name: 'luxelane-cart-storage',
         }
     )
 );

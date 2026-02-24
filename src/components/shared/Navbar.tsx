@@ -5,6 +5,7 @@ import { LogIn, ShoppingBag } from "lucide-react";
 import { useCart } from "@/src/store/useCart";
 import { authClient } from "@/src/lib/auth-client";
 import Loading from "../Loading/IsLoading";
+import ErrorMessage from "../CoustomBtn/ErrorBtn";
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -12,6 +13,17 @@ const Navbar = () => {
 
     const { data: user, isPending, isRefetching, error } = authClient.useSession()
     if (isPending) return <Loading />
+    if (error) {
+
+        return (
+            <div className="min-h-screen flex items-center justify-center p-6">
+                <ErrorMessage
+                    message={error.message || "Failed to load session"}
+                    onRetry={() => window.location.reload()}
+                />
+            </div>
+        );
+    }
     return (
         <nav className="fixed w-full z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
             <div className="max-w-7xl mx-auto px-6 lg:px-12 py-5 flex justify-between items-center">
