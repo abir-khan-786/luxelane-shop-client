@@ -66,8 +66,8 @@ export default function ProductDetails({ }) {
                         src={data.image}
                         alt={data.name}
                         fill
-                        className="object-cover"
-                        priority
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+
                     />
                 </div>
 
