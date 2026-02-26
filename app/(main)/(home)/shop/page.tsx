@@ -75,10 +75,10 @@ export default function ShopPage() {
                 {filteredProducts.map((product) => (
                     <div key={product.id} className="group flex flex-col">
                         <div className="relative aspect-[3/4] overflow-hidden bg-[#f9f9f9] mb-6">
-                            <Image
+                            <img
                                 src={product.image}
                                 alt={product.name}
-                                fill  // এটি নিশ্চিত করুন
+
                                 className="object-cover"
                             />
 

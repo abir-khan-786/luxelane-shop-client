@@ -62,10 +62,10 @@ export default function ProductDetails({ }) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
                 {/* Product Image */}
                 <div className="relative aspect-square bg-gray-100 overflow-hidden">
-                    <Image
+                    <img
                         src={data.image}
                         alt={data.name}
-                        fill
+
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 
                     />
