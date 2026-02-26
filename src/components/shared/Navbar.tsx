@@ -49,9 +49,9 @@ const Navbar = () => {
                             {cartItems.length}
                         </span>
                     </button>
-                    <Link href={"/login"} className="relative group">
+                    {!user && <Link href={"/login"} className="relative group">
                         <LogIn className="w-6 h-6 text-[#004d4d] group-hover:text-[#b87333] transition-colors" />
-                    </Link>
+                    </Link>}
 
                     <Link href={"/profile"} className="relative group">
                         {user?.user.name}
