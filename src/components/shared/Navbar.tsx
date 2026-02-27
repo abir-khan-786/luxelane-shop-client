@@ -30,7 +30,7 @@ const Navbar = () => {
 
                 {/* Logo */}
                 <Link href="/" className="font-serif text-2xl md:text-3xl font-bold text-[#004d4d]">
-                    LuxeLane<span className="text-[#b87333]">.</span>
+                    LuxeLane<span className="text-[#b87333]">APP.</span>
                 </Link>
 
                 {/* Desktop Links */}
