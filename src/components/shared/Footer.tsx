@@ -46,7 +46,7 @@ const Footer = () => {
 
             <div className="max-w-7xl mx-auto px-6 lg:px-12 mt-16 pt-8 border-t border-white/10 text-center">
                 <p className="text-[12px] opacity-50 tracking-widest uppercase">
-                    &copy; {new Date().getFullYear()} LuxeLane-Shop. Global Fine Goods.
+                    &copy; {new Date().getFullYear()} LuxeLane-Shop. Global Fine Goods. and some
                 </p>
             </div>
         </footer>
