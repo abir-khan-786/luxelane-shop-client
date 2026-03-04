@@ -1,26 +1,31 @@
 import { prisma } from "@/src/lib/server/prisma";
 import { NextResponse } from "next/server";
 
-// GET: http://localhost:3000/api/users/[email]
-export async function GET(
-    req: Request,
-    { params }: { params: Promise<{ id: string }> } // এখানে 'id' মানে আপনার পাঠানো ইমেইল
-) {
+
+
+export async function GET(req: Request) {
     try {
-        const { id: email } = await params;
+        const { searchParams } = new URL(req.url);
 
-        const user = await prisma.user.findUnique({
+        const id = searchParams.get("id");
+        const email = searchParams.get("email");
+        const role = searchParams.get("role");
+
+        const user = await prisma.user.findFirst({
             where: {
-                email: email, // ✅ ইমেইল দিয়ে খোঁজা [Prisma findUnique](https://www.prisma.io)
+                ...(id && { id }),
+                ...(email && { email }),
+                ...(role && { role: role as any }),
             },
-
         });
 
-        if (!user) return NextResponse.json({ error: "User in not found error" }, { status: 404 });
-        return NextResponse.json(user);
+        if (!user) {
+            return NextResponse.json({ error: "User not found" }, { status: 404 });
+        }
 
+        return NextResponse.json(user);
     } catch (error) {
-        return NextResponse.json({ error: "Error" }, { status: 500 });
+        return NextResponse.json({ error: "Server error" }, { status: 500 });
     }
 }
 export async function DELETE(request: Request) {

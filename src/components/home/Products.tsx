@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React from 'react';
 
 const products = [
@@ -29,9 +30,10 @@ const Products = () => {
                         <div key={item.id} className="group cursor-pointer">
                             {/* Product Image Area */}
                             <div className="relative aspect-[3/4] bg-gray-100 overflow-hidden mb-4">
-                                <img
+                                <Image
                                     src={item.img}
                                     alt={item.name}
+                                    fill
                                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                 />
                                 {/* Fast Action Button (Hidden on Mobile, Visible on Hover) */}

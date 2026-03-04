@@ -12,6 +12,7 @@ const Navbar = () => {
     const { onOpen, cartItems } = useCart();
 
     const { data: user, isPending, isRefetching, error } = authClient.useSession()
+
     if (isPending) return <Loading />
     if (error) {
 
@@ -38,7 +39,13 @@ const Navbar = () => {
                     <li><Link href="/shop" className="hover:text-[#b87333] transition-colors">Collections</Link></li>
                     <li><Link href="/about" className="hover:text-[#b87333] transition-colors">Our Story</Link></li>
                     <li><Link href="/contact" className="hover:text-[#b87333] transition-colors">Contact</Link></li>
-                    <li><Link href="/admin" className="hover:text-[#b87333] transition-colors">Admin</Link></li>
+
+                    <li>
+                        <Link href="/admin" className="hover:text-[#b87333] transition-colors">
+                            Admin
+                        </Link>
+                    </li>
+
                 </ul>
 
                 {/* Desktop Icons */}
@@ -54,7 +61,14 @@ const Navbar = () => {
                     </Link>}
 
                     <Link href={"/profile"} className="relative group">
-                        {user?.user.name}
+                        {user ? (
+                            <span className="w-6 h-6 rounded-full bg-[#004d4d] text-white flex items-center justify-center text-xs uppercase font-bold">
+
+                                {user.user?.name.charAt(0)}
+                            </span>
+                        ) : (
+                            <LogIn className="w-6 h-6 text-[#004d4d] group-hover:text-[#b87333] transition-colors" />
+                        )}
                     </Link>
 
                 </div>

@@ -2,20 +2,18 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Edit3, Trash2, Plus, Search, Package } from "lucide-react";
+import { Edit3, Trash2, Plus, Search } from "lucide-react";
 import Link from "next/link";
 import Loading from "@/src/components/Loading/IsLoading";
-import { useParams } from "next/navigation";
 import { Product } from "@prisma/client";
-import { authClient } from "@/src/lib/auth-client";
+import toast from "react-hot-toast";
+import Image from "next/image";
 
 export default function AdminProductTable() {
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
 
-
-    // ✅ ১. আগে ফাংশনটি ডিফাইন করুন
     async function fetchProducts() {
         try {
             const res = await fetch("/api/products");
@@ -28,20 +26,53 @@ export default function AdminProductTable() {
         }
     }
 
-    // ✅ ২. তারপর useEffect-এ কল করুন
     useEffect(() => {
         fetchProducts();
     }, []);
 
-    async function handleDelete(id: string) {
-        if (!confirm("Are you sure you want to delete this product?")) return;
-        const res = await fetch(`/api/products/${id}`, { method: "DELETE" });
-        if (res.ok) {
-            setProducts(products.filter((p) => p.id !== id));
-        }
+    // ✅ ডিলিট কনফার্মেশন হ্যান্ডলার
+    const confirmDelete = (id: string) => {
+        toast((t) => (
+            <div className="flex flex-col gap-2 p-1">
+                <p className="text-sm font-bold ">Are you sure you want to delete?</p>
+                <div className="flex gap-2 justify-end">
+                    <button
+                        className="bg-red-500  cursor-pointer text-white px-3 py-1 rounded-lg text-xs font-bold hover:bg-red-600 transition-all"
+                        onClick={() => {
+                            executeDelete(id); // আসল ডিলিট ফাংশন কল
+                            toast.dismiss(t.id);
+                        }}
+                    >
+                        Delete
+                    </button>
+                    <button
+                        className="bg-slate-100 text-slate-600 px-3 py-1 rounded-lg text-xs font-bold hover:bg-slate-200 transition-all"
+                        onClick={() => toast.dismiss(t.id)}
+                    >
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        ), {
+            duration: 4000,
+            position: 'top-center',
+        });
+    };
+
+    // ✅ আসল ডিলিট লজিক
+    async function executeDelete(id: string) {
+        const deletePromise = fetch(`/api/products/${id}`, { method: "DELETE" });
+
+        toast.promise(deletePromise, {
+            loading: 'Deleting product...',
+            success: () => {
+                setProducts(prev => prev.filter((p) => p.id !== id));
+                return 'Product deleted successfully! 🎉';
+            },
+            error: 'Could not delete product. ❌',
+        });
     }
 
-    // ফিল্টার লজিক
     const filteredProducts = products.filter(p =>
         p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         p.category.toLowerCase().includes(searchTerm.toLowerCase())
@@ -52,7 +83,7 @@ export default function AdminProductTable() {
     return (
         <div className="min-h-screen bg-[#F8FAFC] p-4 md:p-10">
             <div className="max-w-7xl mx-auto">
-                {/* হেডার ও সার্চবার */}
+                {/* Header Section */}
                 <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
                     <div>
                         <h1 className="text-2xl font-black text-slate-900 tracking-tight">Product Management</h1>
@@ -70,14 +101,14 @@ export default function AdminProductTable() {
                             />
                         </div>
                         <Link href={`addProducts`}>
-                            <button className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-all text-sm shadow-lg shadow-indigo-100">
+                            <button className="flex items-center cursor-pointer gap-2 px-5 py-2.5 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-all text-sm shadow-lg shadow-indigo-100">
                                 <Plus size={18} /> Add New
                             </button>
                         </Link>
                     </div>
                 </div>
 
-                {/* টেবিল সেকশন */}
+                {/* Table Section */}
                 <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
@@ -102,7 +133,10 @@ export default function AdminProductTable() {
                                         >
                                             <td className="p-5">
                                                 <div className="flex items-center gap-4">
-                                                    <img src={product.image} className="w-12 h-12 rounded-xl object-cover border border-slate-100 shadow-sm" alt="" />
+                                                    <Image src={product.image} alt={product.name}
+                                                        width={50} height={50}
+                                                        className="w-12 h-12 rounded-lg object-cover border border-slate-200"
+                                                    />
                                                     <span className="font-bold text-slate-700 block max-w-[200px] truncate">{product.name}</span>
                                                 </div>
                                             </td>
@@ -125,9 +159,10 @@ export default function AdminProductTable() {
                                                             <Edit3 size={18} />
                                                         </button>
                                                     </Link>
+                                                    {/* ✅ এখানে ডিলিট বাটন আপডেট করা হয়েছে */}
                                                     <button
-                                                        onClick={() => handleDelete(product.id)}
-                                                        className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                                                        onClick={() => confirmDelete(product.id)}
+                                                        className="p-2 text-slate-400 hover:text-red-600 cursor-pointer hover:bg-red-50 rounded-lg transition-all"
                                                     >
                                                         <Trash2 size={18} />
                                                     </button>
@@ -139,13 +174,6 @@ export default function AdminProductTable() {
                             </tbody>
                         </table>
                     </div>
-
-                    {filteredProducts.length === 0 && (
-                        <div className="py-20 text-center flex flex-col items-center gap-4">
-                            <Package size={48} className="text-slate-200" />
-                            <p className="text-slate-400 font-bold">No products found!</p>
-                        </div>
-                    )}
                 </div>
             </div>
         </div>

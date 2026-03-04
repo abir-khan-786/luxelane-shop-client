@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Package, DollarSign, Layers, Image as ImageIcon, Info, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function AddProductPage() {
     const [loading, setLoading] = useState(false);
@@ -28,15 +29,15 @@ export default function AddProductPage() {
             });
 
             if (response.ok) {
-                alert("Product added successfully! 🎉");
+                toast.success("Product added successfully! 🎉");
                 router.push("allProducts"); // প্রোডাক্ট লিস্টে পাঠিয়ে দেবে
             } else {
-                alert("Failed to add product.");
+                toast.error("Failed to add product.");
             }
         } catch (error) {
             console.error(error);
         } finally {
-            setLoading(false);
+            setLoading(true)
         }
     }
 
@@ -138,7 +139,7 @@ export default function AddProductPage() {
                             whileHover={{ scale: 1.01 }}
                             whileTap={{ scale: 0.98 }}
                             disabled={loading}
-                            className="w-full py-5 bg-indigo-600 text-white font-black rounded-[1.5rem] shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 disabled:bg-slate-300"
+                            className="w-full py-5 cursor-pointer bg-indigo-600 text-white font-black rounded-[1.5rem] shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 disabled:bg-slate-300"
                         >
                             {loading ? (
                                 <Loader2 className="animate-spin" size={20} />
