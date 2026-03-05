@@ -2,10 +2,10 @@
 
 import { motion } from "framer-motion";
 import { User, Mail, Shield, LogOut, Settings, Camera } from "lucide-react"; // আইকনের জন্য [Lucide React](https://lucide.dev)
-import Loading from "@/src/components/Loading/IsLoading";
 import { authClient } from "@/src/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import Loading from "@/src/components/Loading/Loading";
 
 
 

@@ -3,9 +3,9 @@
 import { useEffect, useState, use } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import Loading from "@/src/components/Loading/IsLoading";
 import toast from "react-hot-toast";
 import { IProduct } from "@/src/types/ProductType";
+import Loading from "@/src/components/Loading/Loading";
 
 export default function UpdateProductPage({ params }: { params: Promise<{ slug: string }> }) {
     const resolvedParams = use(params);
