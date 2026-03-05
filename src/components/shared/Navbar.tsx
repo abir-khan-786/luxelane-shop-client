@@ -4,7 +4,7 @@ import Link from "next/link";
 import { LogIn, ShoppingBag } from "lucide-react";
 import { useCart } from "@/src/store/useCart";
 import { authClient } from "@/src/lib/auth-client";
-import Loading from "../Loading/IsLoading";
+import Loading from "../Loading/Loading";
 import ErrorMessage from "../CoustomBtn/ErrorBtn";
 
 const Navbar = () => {
@@ -56,9 +56,6 @@ const Navbar = () => {
                             {cartItems.length}
                         </span>
                     </button>
-                    {!user && <Link href={"/login"} className="relative group">
-                        <LogIn className="w-6 h-6 text-[#004d4d] group-hover:text-[#b87333] transition-colors" />
-                    </Link>}
 
                     <Link href={"/profile"} className="relative group">
                         {user ? (

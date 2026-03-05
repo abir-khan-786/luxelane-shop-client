@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Edit3, Trash2, Plus, Search } from "lucide-react";
 import Link from "next/link";
-import Loading from "@/src/components/Loading/IsLoading";
 import { Product } from "@prisma/client";
 import toast from "react-hot-toast";
 import Image from "next/image";
+import Loading from "@/src/components/Loading/Loading";
 
 export default function AdminProductTable() {
     const [products, setProducts] = useState<Product[]>([]);

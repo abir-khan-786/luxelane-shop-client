@@ -16,11 +16,9 @@ export default function UpdateProductPage({ params }: { params: Promise<{ slug: 
     const [updating, setUpdating] = useState(false);
     const router = useRouter();
 
-    // ১. বর্তমান ডাটা ফেচ করা [Next.js Route Handlers](https://nextjs.org)
     useEffect(() => {
         async function getProduct() {
-            // ❌ ভুল ছিল: if (productId) return
-            // ✅ সঠিক: যদি আইডি না থাকে তবে রিটার্ন করবে
+
             if (!productId) return;
 
             try {
